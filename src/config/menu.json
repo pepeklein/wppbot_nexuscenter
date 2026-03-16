@@ -1,0 +1,104 @@
+{
+  "main": {
+    "text": "Olá! Bem-vindo(a) à *Nexus Center*\n\nComo podemos ajudar você hoje? Selecione a solução desejada:\n\n1 - *Nexus Gate* (Gestão Condominial & Segurança)\n2 - *Camba* (Gestão de Caçambas)\n3 - *Nexus Build* (Desenvolvimento Sob Medida)\n4 - Outros Assuntos",
+    "options": {
+      "1": {
+        "label": "Nexus Gate (Gestão Condominial & Segurança)",
+        "next": "nexus_gate"
+      },
+      "2": {
+        "label": "Camba (Gestão de Caçambas)",
+        "next": "camba"
+      },
+      "3": {
+        "label": "Nexus Build (Desenvolvimento Sob Medida)",
+        "next": "nexus_build"
+      },
+      "4": {
+        "label": "Outros Assuntos",
+        "next": "description_request"
+      }
+    }
+  },
+  "nexus_gate": {
+    "text": "*Nexus Gate*: Gestão condominial, controle de acesso e segurança integrados.\n\nComo podemos ajudar?\n1 - Quero conhecer a plataforma\n2 - Suporte Técnico\n3 - Financeiro / Segunda via\n\nDigite *0* para voltar",
+    "options": {
+      "1": {
+        "label": "Nexus Gate - Comercial",
+        "next": "description_request"
+      },
+      "2": {
+        "label": "Nexus Gate - Suporte",
+        "next": "description_request"
+      },
+      "3": {
+        "label": "Nexus Gate - Financeiro",
+        "next": "description_request"
+      },
+      "0": {
+        "label": "Voltar",
+        "next": "main"
+      }
+    }
+  },
+  "camba": {
+    "text": "*Camba*: Controle total de aluguel de caçambas de entulho.\n\nComo podemos ajudar?\n1 - Quero conhecer o sistema\n2 - Suporte ao cliente\n3 - Financeiro\n\nDigite *0* para voltar",
+    "options": {
+      "1": {
+        "label": "Camba - Comercial",
+        "next": "description_request"
+      },
+      "2": {
+        "label": "Camba - Suporte",
+        "next": "description_request"
+      },
+      "3": {
+        "label": "Camba - Financeiro",
+        "next": "description_request"
+      },
+      "0": {
+        "label": "Voltar",
+        "next": "main"
+      }
+    }
+  },
+  "nexus_build": {
+    "text": "*Nexus Build*: Transformamos sua ideia em realidade (SaaS, Apps, Sites).\n\nConte-nos um pouco sobre seu projeto:\n1 - Novo SaaS / Web App\n2 - Aplicativo Mobile (iOS/Android)\n3 - Site Institucional / E-commerce\n\nDigite *0* para voltar",
+    "options": {
+      "1": {
+        "label": "Nexus Build - SaaS/Web",
+        "next": "description_request"
+      },
+      "2": {
+        "label": "Nexus Build - Mobile",
+        "next": "description_request"
+      },
+      "3": {
+        "label": "Nexus Build - Site/Store",
+        "next": "description_request"
+      },
+      "0": {
+        "label": "Voltar",
+        "next": "main"
+      }
+    }
+  },
+  "description_request": {
+    "text": "Excelente! Para agilizarmos seu atendimento, por favor, envie uma *breve descrição* da sua necessidade (em uma única mensagem):",
+    "isTerminal": true,
+    "next": "confirmation"
+  },
+  "confirmation": {
+    "text": "Legal! Só para confirmar as informações:\n\n*Serviço:* {selection}\n*Descrição:* {description}\n\nEstá correto?\n1 - Sim, enviar agora\n2 - Não, quero corrigir a descrição",
+    "options": {
+      "1": {
+        "label": "Confirmado",
+        "next": "completed"
+      },
+      "2": {
+        "label": "Corrigir",
+        "next": "description_request"
+      }
+    }
+  }
+}
