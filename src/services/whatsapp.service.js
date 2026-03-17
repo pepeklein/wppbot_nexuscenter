@@ -37,12 +37,21 @@ class WhatsAppService {
    */
   _initializeEvents() {
     this.client.on('qr', async (qr) => {
-      logger.info('QR Code received, please scan:');
+      logger.info('QR Code received!');
+      
+      // 1. Generate a clickable URL (Best for Cloud/Railway)
+      const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qr)}`;
+      logger.info('--------------------------------------------------');
+      logger.info('🔗 CLIQUE NO LINK ABAIXO PARA ESCANEAR O QR CODE:');
+      logger.info(qrImageUrl);
+      logger.info('--------------------------------------------------');
+
+      // 2. Terminal Fallback
       try {
         const qrString = await QRCode.toString(qr, { type: 'terminal', small: true });
         console.log(qrString);
       } catch (err) {
-        logger.error('Failed to generate QR Code:', err);
+        logger.error('Failed to generate terminal QR Code:', err);
       }
     });
 
