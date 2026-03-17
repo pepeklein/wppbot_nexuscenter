@@ -45,6 +45,12 @@ class MessageHandler {
     // The target of the reset/session is the customer
     const cleanTargetId = fromMe ? cleanTo : cleanFrom;
 
+    // IMPORTANT: If the message is from the bot itself and it's NOT a reset command,
+    // we must ignore it to avoid infinite loops or double responses.
+    if (fromMe && !isReset) {
+      return;
+    }
+
     // 1. Logic for reset command (/fim) - PRIORITIZED
     if (isReset) {
       const manualCommand = body.trim().toLowerCase().startsWith('/fim') || body.trim().toLowerCase() === 'fim';
