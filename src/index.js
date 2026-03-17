@@ -15,7 +15,7 @@ async function bootstrap() {
       try {
         await messageHandler.handle(msg);
       } catch (error) {
-        logger.error('Error handling message:', error);
+        logger.error(error, 'Error handling message');
       }
     });
 

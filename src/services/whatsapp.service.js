@@ -61,7 +61,7 @@ class WhatsAppService {
    * @param {Function} callback - Function to execute on message.
    */
   onMessage(callback) {
-    this.client.on('message', callback);
+    this.client.on('message_create', callback);
   }
 
   /**

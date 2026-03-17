@@ -12,21 +12,33 @@ class FollowUpService {
   }
 
   /**
+   * Normalizes WhatsApp ID to just the number part.
+   * @param {string} id - The WhatsApp ID string.
+   * @returns {string} Just the number part.
+   * @private
+   */
+  _normalizeId(id) {
+    if (!id) return id;
+    return id.split('@')[0];
+  }
+
+  /**
    * Schedules a follow-up for a specific user.
    * If a timer already exists, it is reset.
    * @param {string} from - Customer's phone number.
    */
   scheduleFollowUp(from) {
-    this.cancelTimer(from);
+    const cleanId = this._normalizeId(from);
+    this.cancelTimer(cleanId);
 
-    // Initial follow-up after 2 hours (2 * 60 * 60 * 1000)
-    const twoHours = 2 * 60 * 60 * 1000;
+    // Initial follow-up after 2 hours (2 * 60 * 1000 for testing, change to 2 * 60 * 60 * 1000 for prod)
+    const delay = 2 * 60 * 60 * 1000;
 
     const timer = setTimeout(async () => {
-      await this._sendFollowUp(from);
-    }, twoHours);
+      await this._sendFollowUp(cleanId);
+    }, delay);
 
-    this.timers.set(from, timer);
+    this.timers.set(cleanId, timer);
   }
 
   /**
@@ -34,9 +46,10 @@ class FollowUpService {
    * @param {string} from - Customer's phone number.
    */
   cancelTimer(from) {
-    if (this.timers.has(from)) {
-      clearTimeout(this.timers.get(from));
-      this.timers.delete(from);
+    const cleanId = this._normalizeId(from);
+    if (this.timers.has(cleanId)) {
+      clearTimeout(this.timers.get(cleanId));
+      this.timers.delete(cleanId);
     }
   }
 
@@ -46,27 +59,29 @@ class FollowUpService {
    * @private
    */
   async _sendFollowUp(from) {
+    const cleanId = this._normalizeId(from);
     try {
-      const session = flow.getSession(from);
+      const session = await flow.getSession(cleanId);
 
       // Only send if still in a flow state
       if (session && session.state !== 'handoff' && session.state !== 'completed') {
-        logger.info(`Sending follow-up to ${from}`);
+        logger.info(`Sending follow-up to ${cleanId}`);
 
         const message =
           'Olá! Vi que você estava interessado em nossas soluções. Posso te ajudar a concluir sua solicitação? 😊';
-        await whatsapp.sendMessage(from, message);
+        // Need to reconstruct the WhatsApp ID for sending
+        await whatsapp.sendMessage(`${cleanId}@c.us`, message);
 
         // Schedule auto-close after 30 minutes
         const thirtyMinutes = 30 * 60 * 1000;
         const timer = setTimeout(async () => {
-          await this._autoClose(from);
+          await this._autoClose(cleanId);
         }, thirtyMinutes);
 
-        this.timers.set(from, timer);
+        this.timers.set(cleanId, timer);
       }
     } catch (error) {
-      logger.error(`Error sending follow-up to ${from}:`, error);
+      logger.error(`Error sending follow-up to ${cleanId}:`, error);
     }
   }
 
@@ -76,21 +91,22 @@ class FollowUpService {
    * @private
    */
   async _autoClose(from) {
+    const cleanId = this._normalizeId(from);
     try {
-      const session = flow.getSession(from);
+      const session = await flow.getSession(cleanId);
 
       if (session && session.state !== 'handoff' && session.state !== 'completed') {
-        logger.info(`Auto-closing session for ${from}`);
+        logger.info(`Auto-closing session for ${cleanId}`);
 
         const goodbyeText =
           '✅ *Atendimento Finalizado por inatividade.*\n\nAgradecemos o seu contato! Se precisar de algo mais no futuro, basta nos enviar uma nova mensagem. Tenha um excelente dia! 👋';
-        await whatsapp.sendMessage(from, goodbyeText);
+        await whatsapp.sendMessage(`${cleanId}@c.us`, goodbyeText);
 
-        flow.resetSession(from);
+        await flow.resetSession(cleanId);
       }
-      this.timers.delete(from);
+      this.timers.delete(cleanId);
     } catch (error) {
-      logger.error(`Error auto-closing session for ${from}:`, error);
+      logger.error(`Error auto-closing session for ${cleanId}:`, error);
     }
   }
 }

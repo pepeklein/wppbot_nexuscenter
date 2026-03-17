@@ -1,6 +1,6 @@
-# Nexus Center - WhatsApp Chatbot
+# WhatsApp Business Chatbot - Nexus Center
 
-Um chatbot profissional para WhatsApp Business, desenvolvido com foco em alta performance, modularidade e experiência do usuário (UX).
+Chatbot inteligente para WhatsApp focado em triagem de leads, gestão de horários e persistência em nuvem.
 
 ## 🚀 Funcionalidades
 
@@ -9,31 +9,55 @@ Um chatbot profissional para WhatsApp Business, desenvolvido com foco em alta pe
 - **Gestão de Horário**: Respostas automáticas para atendimentos fora do horário comercial (08h às 18h).
 - **Follow-up Automático**: Lembretes de inatividade para não perder leads.
 - **Auto-Silence**: O bot para de responder automaticamente quando identifica que um humano assumiu a conversa.
+- **🛡️ Persistência Cloud**: Sessões e Leads salvos no **Supabase** com segurança RLS.
+- **🚀 Handoff Inteligente**: Transferência automática para humano após 3 erros seguidos no menu.
 - **Comando de Reset**: Use `/fim` para encerrar um atendimento, enviar uma despedida profissional e resetar o bot para o próximo contato.
 
 ## 🛠️ Tecnologias
 
-- [whatsapp-web.js](https://github.com/pedroslopez/whatsapp-web.js) - Integração com WhatsApp.
-- [Pino](https://github.com/pinojs/pino) - Logging de alta performance.
+- [whatsapp-web.js](https://github.com/pedroslopez/whatsapp-web.js) - Cliente WhatsApp para Node.js.
+- [Supabase](https://supabase.com/) - Banco de Dados PostgreSQL na nuvem.
+- [Pino](https://github.com/pinojs/pino) - Logger de alta performance.
 - [Dotenv](https://github.com/motdotla/dotenv) - Gestão de variáveis de ambiente.
-- [ESLint](https://eslint.org/) & [Prettier](https://prettier.io/) - Padronização de código.
 
-## 📦 Como Usar
+## 📦 Instalação
 
-1.  Instale as dependências:
-    ```bash
-    npm install
-    ```
+1. Clone o repositório.
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+3. Configure o arquivo `.env` com base no `.env.example`.
+4. Inicie o bot:
+   ```bash
+   npm start
+   ```
 
-2.  Configure o arquivo `.env` (use o `.env.example` como base).
+## ⚙️ Configuração (Supabase)
 
-3.  Inicie o bot:
-    ```bash
-    npm start
-    ```
+Para habilitar a persistência em nuvem, crie as tabelas `sessions` e `leads` no seu projeto Supabase usando o SQL Editor:
 
-4.  Escaneie o QR Code que aparecerá no terminal.
+```sql
+create table public.sessions (
+  id text primary key,
+  state text not null default 'main',
+  data jsonb not null default '{}'::jsonb,
+  retry_count int not null default 0,
+  updated_at timestamp with time zone default now()
+);
 
-## 📄 Licença
+create table public.leads (
+  id uuid primary key default gen_random_uuid(),
+  customer_name text,
+  customer_phone text not null,
+  department text not null,
+  description text not null,
+  created_at timestamp with time zone default now()
+);
 
-Este projeto é de uso exclusivo da **Nexus Center**.
+alter table public.sessions enable row level security;
+alter table public.leads enable row level security;
+```
+
+---
+Nexus Center - Todos os direitos reservados.
