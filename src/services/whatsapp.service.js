@@ -1,5 +1,5 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
+const QRCode = require('qrcode');
 const logger = require('./logger.service');
 
 /**
@@ -36,9 +36,14 @@ class WhatsAppService {
    * @private
    */
   _initializeEvents() {
-    this.client.on('qr', (qr) => {
+    this.client.on('qr', async (qr) => {
       logger.info('QR Code received, please scan:');
-      qrcode.generate(qr);
+      try {
+        const qrString = await QRCode.toString(qr, { type: 'terminal', small: true });
+        console.log(qrString);
+      } catch (err) {
+        logger.error('Failed to generate QR Code:', err);
+      }
     });
 
     this.client.on('ready', () => {
