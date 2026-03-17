@@ -6,11 +6,11 @@ const logger = require('./logger.service');
  */
 class DatabaseService {
   constructor() {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_KEY;
+    const supabaseUrl = process.env.SUPABASE_URL?.trim();
+    const supabaseKey = process.env.SUPABASE_KEY?.trim();
 
     if (!supabaseUrl || !supabaseKey) {
-      logger.error('Supabase credentials missing in environment variables');
+      logger.error('Supabase credentials missing or invalid in environment variables');
       this.client = null;
     } else {
       this.client = createClient(supabaseUrl, supabaseKey);
