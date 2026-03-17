@@ -23,8 +23,8 @@ class WhatsAppService {
           '--single-process', // <- this one is key for low-memory environments
           '--disable-gpu'
         ],
-        // When running in Docker, we use the pre-installed chrome
-        executablePath: process.env.NODE_ENV === 'production' ? '/usr/bin/google-chrome-stable' : undefined,
+        // When running in Docker, we use the pre-installed chromium
+        executablePath: process.env.NODE_ENV === 'production' ? '/usr/bin/chromium' : undefined,
       },
     });
 
