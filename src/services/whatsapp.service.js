@@ -13,7 +13,18 @@ class WhatsAppService {
     this.client = new Client({
       authStrategy: new LocalAuth(),
       puppeteer: {
-        args: ['--no-sandbox'],
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--single-process', // <- this one is key for low-memory environments
+          '--disable-gpu'
+        ],
+        // When running in Docker, we use the pre-installed chrome
+        executablePath: process.env.NODE_ENV === 'production' ? '/usr/bin/google-chrome-stable' : undefined,
       },
     });
 
