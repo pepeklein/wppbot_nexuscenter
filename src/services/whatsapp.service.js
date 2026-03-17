@@ -38,7 +38,7 @@ class WhatsAppService {
   _initializeEvents() {
     this.client.on('qr', (qr) => {
       logger.info('QR Code received, please scan:');
-      qrcode.generate(qr, { small: true });
+      qrcode.generate(qr);
     });
 
     this.client.on('ready', () => {
